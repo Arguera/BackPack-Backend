@@ -1,0 +1,15 @@
+{
+  "roles": {
+    "SYSADMIN": "sysadmin",
+    "ADMIN": "admin",
+    "MOD": "mod",
+    "USER": "user"
+  },
+  "fileTypes": {
+    "IMAGE": "image/",
+    "VIDEO": "video",
+    "AUDIO": "audio",
+    "DOCUMENT": "document",
+    "PDF": "application/pdf"
+  }
+}
