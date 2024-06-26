@@ -1,12 +1,13 @@
-import express from 'express';
-import path from 'path';
-import cookieParser from 'cookie-parser';
-import logger from 'morgan';
-import cors from 'cors';
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const cors = require('cors');
 
-import database from './config/database.config';
+const database = require('./config/database.config');
 
-import apiRouter from './routers/index.router';
+const apiRouter = require('./routers/index.router');
+const { errorHandler } = require('./middlewares/error.midleware');
 
 const app = express();
 database.connect();
@@ -27,9 +28,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', apiRouter);
 
 // Error handler
-app.use((error, req, res, next) => {
-  console.error(error);
-  return res.status(500).json({ error: 'Internal Server Error' });
-});
+app.use(errorHandler);
 
 module.exports = app;

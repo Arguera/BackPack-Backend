@@ -87,9 +87,9 @@ controller.login = async (req, res, next) => {
 
 controller.whoami = async (req, res, next) => {
   try {
-    const { _id, carnet, name, lastname, email, degree, roles } = req.user;
+    const { _id, carnet, name, lastname, email, degree, roles, savedPosts } = req.user;
     return res.status(200).json({
-      _id, carnet, name, lastname, email, degree, roles
+      _id, carnet, name, lastname, email, degree, roles, savedPosts
     })
   } catch (error) {
     next(error); 

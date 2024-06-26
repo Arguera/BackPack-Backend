@@ -1,4 +1,5 @@
 const cloudinary = require('cloudinary').v2;
+const debug = require('debug')('app:cloudinary.tools');
 const tools = {};
 
 cloudinary.config({

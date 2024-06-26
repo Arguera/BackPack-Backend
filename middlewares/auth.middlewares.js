@@ -1,8 +1,9 @@
 const debug = require('debug')('app:auth-middleware');
+const httpError = require('http-errors');
 const { verifyToken } = require('../utils/jw.tools');
 const User = require('../models/User.model');
 
-const { roles: ROLES } = require('../data/configuration.constants.json')
+const { roles: ROLES } = require('../data/configuration.constants.json');
 
 const middlewares = {};
 const PREFIX = 'Bearer';
@@ -13,42 +14,30 @@ middlewares.authentication = async (req, res, next) => {
     // 01 - Verificar el authorization
     const { authorization } = req.headers;
 
-    if(!authorization) {
-      return res.status(401).json({ error: 'User not authenticated' });
-    }
+    if(!authorization) throw httpError(401, 'User not authenticated');
 
     // 02 - Verificar la validez del token
     // Token -> Bearer kfdj;askfjd;adfaldshfajshfdlkajskdfjaskj
     const [prefix, token] = authorization.split(' ');
     
-    if(prefix !== PREFIX) {
-      return res.status(401).json({ error: 'User not authenticated' });
-    }
+    if(prefix !== PREFIX) throw httpError(401, 'User not authenticated');
 
-    if(!token) {
-      return res.status(401).json({ error: 'User not authenticated' });
-    }
+    if(!token) throw httpError(401, 'User not authenticated');
 
     const payload = await verifyToken(token);
 
-    if(!payload) {
-      return res.status(401).json({ error: 'User not authenticated' })
-    }
+    if(!payload) throw httpError(401, 'User not authenticated');
 
     const userId = payload['sub'];
 
     // 03 - Verificar el usuario
     const user = await User.findById(userId);
 
-    if(!user) {
-      return res.status(401).json({ error: 'User not authenticated' });
-    }
+    if(!user) throw httpError(401, 'User not authenticated');
 
     // 04 - Comparar el token con los tokens 
     const isTokenValid = user.tokens.includes(token);
-    if(!isTokenValid) {
-      return res.status(401).json({ error: 'User not authenticated' })
-    }
+    if(!isTokenValid) throw httpError(401, 'User not authenticated');
 
     // 05 - Modificar la req, para añadir la info del usuario
     req.user = user;
@@ -71,9 +60,7 @@ middlewares.authorization = (roleRequired = ROLES.SYSADMIN) => {
       const isSysadmin = roles.includes(ROLES.SYSADMIN);
 
       // Si no está -> 403
-      if(!isAuth && !isSysadmin) {
-        return res.status(403).json({ error: 'Forbidden' })
-      }
+      if(!isAuth && !isSysadmin) throw httpError(403, 'Forbiden');
 
       // Si está -> next 
       next();

@@ -1,67 +1,13 @@
 const Post = require('../models/Post.model');
-const fs = require('fs');
-const { uploadFile } = require('../utils/cloudinary.tools');
+const postService = require('../services/post.service'); 
 
 const debug = require('debug')('app:post-controller');
 
-const controller = {};
+const controller = {}; 
 
 controller.save = async (req, res, next) => {
-  // Premisa - La ruta save debe de estar autenticada
   try {
-    const { 
-      title, 
-      topics,
-      publication_year, 
-      publication_cycle,
-      category,
-      subject,
-  } = req.body;
-
-    const file = req.file;
-
-    const { identifier } = req.params;
-    const { user } = req;
-    
-    let post = await Post.findById(identifier);
-
-    if(!post) {
-      post = new Post();
-      post['user'] = user._id;
-    } else {
-      if(!post['user'].equals(user._id)) {
-        return res.status(403).json({ error: 'This is not your post' })
-      }
-    }
-
-    const document = await uploadFile(file.path, file.filename);
-
-    // debug(file);
-
-    fs.unlinkSync(file.path), (error) => {
-      if(error) {
-        console.error(error);
-        return;
-      }
-    };
-
-    if(!document) {
-      return res.status(409).json({ error: 'Error uploading document' });
-    }
-
-    post['title'] = title;
-    post['topics'] = topics;
-    post['document'] = document.secure_url;
-    post['publication_year'] = publication_year;
-    post['publication_cycle'] = publication_cycle;
-    post['category'] = category;
-    post['subject'] = subject;
-
-    const postSaved = await post.save();
-    if(!postSaved) {
-      // Conflict
-      return res.status(409).json({ error: 'Error creating post' });
-    }
+    const postSaved = await postService.save(req);
 
     return res.status(201).json(postSaved);
   } catch (error) {
@@ -72,7 +18,7 @@ controller.save = async (req, res, next) => {
 controller.findAll = async (req, res, next) => {
   try {
     const posts = await Post.find({ hidden: false })
-      .populate('subject', 'code name')
+      .populate('subject', 'code name image')
       .populate('user', 'carnet name lastname email degree')
       .populate('likes', 'carnet name lastname email degree')
       .populate('comments.user', 'carnet name lastname email degree');
@@ -90,7 +36,7 @@ controller.findOneById = async (req, res, next) => {
     // Verificar si esta visible
     const post = 
       await Post.findOne({ _id: identifier, hidden: false })
-      .populate('subject', 'code name')
+      .populate('subject', 'code name image')
       .populate('user', 'carnet name lastname email degree')
       .populate('likes', 'carnet name lastname email degree')
       .populate('comments.user', 'carnet name lastname email degree');
@@ -110,7 +56,7 @@ controller.findByUser = async (req, res, next) => {
     const { identifier } = req.params;
     const posts = 
       await Post.find({ user: identifier, hidden: false })
-      .populate('subject', 'code name')
+      .populate('subject', 'code name image')
       .populate('user', 'carnet name lastname email degree')
       .populate('likes', 'carnet name lastname email degree')
       .populate('comments.user', 'carnet name lastname email degree');
@@ -126,7 +72,7 @@ controller.findOwn = async (req, res, next) => {
     const { _id: userId } = req.user;
 
     const posts = await Post.find({ user: userId })
-      .populate('subject', 'code name')
+      .populate('subject', 'code name image')
       .populate('user', 'carnet name lastname email degree')
       .populate('likes', 'carnet name lastname email degree')
       .populate('comments.user', 'carnet name lastname email degree');
@@ -143,7 +89,7 @@ controller.findBySubject = async (req, res, next) => {
 
     const post =
       await Post.find({ subject: identifier, hidden: false })
-      .populate('subject', 'code name')
+      .populate('subject', 'code name image')
       .populate('user', 'carnet name lastname email degree')
       .populate('likes', 'carnet name lastname email degree')
       .populate('comments.user', 'carnet name lastname email degree');
@@ -167,7 +113,7 @@ controller.findSavedPosts = async (req, res, next) => {
         populate: [
           {
             path: 'subject',
-            select: 'code name'
+            select: 'code name image'
           },
           {
             path: 'user',
@@ -216,7 +162,7 @@ controller.toggleHidden = async (req, res, next) => {
     // Obtener el post
     // Verificamos la pertenencia del post al usuario 
     const post = await Post.findOne({ _id: identifier, user: user._id })
-      .populate('subject', 'code name')
+      .populate('subject', 'code name image')
       .populate('user', 'carnet name lastname email degree')
       .populate('likes', 'carnet name lastname email degree')
       .populate('comments.user', 'carnet name lastname email degree');
@@ -245,7 +191,7 @@ controller.likeAPost = async (req, res, next) => {
     // Verificamos la pertenencia del post al usuario 
     const post = 
       await Post.findOne({ _id: identifier, hidden: false })
-      .populate('subject', 'code name')
+      .populate('subject', 'code name image')
       .populate('user', 'carnet name lastname email degree')
       .populate('comments.user', 'carnet name lastname email degree');
 
@@ -305,7 +251,7 @@ controller.saveAPost = async (req, res, next) => {
         populate: [
           {
             path: 'subject',
-            select: 'code name'
+            select: 'code name image'
           },
           {
             path: 'user',
@@ -337,7 +283,7 @@ controller.saveComment = async (req, res, next) => {
     // Obtener le post (id, hidden)
     const post = 
       await Post.findOne({ _id: identifier, hidden: false })
-      .populate('subject', 'code name')
+      .populate('subject', 'code name image')
       .populate('user', 'carnet name lastname email degree')
       .populate('likes', 'carnet name lastname email degree');
 
