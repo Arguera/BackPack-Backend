@@ -8,11 +8,11 @@ const controller = {};
 controller.register = async (req, res, next) => {
   try {
       // Obtener la info
-      const { carnet, name, lastname, email, degree, password} = req.body;
+      const { name, lastname, email, degree, password } = req.body;
 
-      // Verificar la existencia del correo y el user
+      // Verificar la existencia del correo
       const user =
-        await User.findOne({ $or: [{carnet: carnet}, {email: email}] })
+        await User.findOne({email: email});
 
       if(user) {
         return res.status(409).json({ error: 'User already exists!' })
@@ -20,7 +20,6 @@ controller.register = async (req, res, next) => {
 
       // Si no existe lo creamos
       const newUser = new User({
-        carnet: carnet,
         name: name,
         lastname: lastname,
         email: email,
@@ -44,7 +43,7 @@ controller.login = async (req, res, next) => {
 
     // Verificar si el usuario existe
     const user = 
-      await User.findOne({ $or: [{carnet: identifier}, {email: identifier}] })
+      await User.findOne({email: identifier})
 
     // Si no existe -> 404
     if(!user) {
@@ -87,9 +86,9 @@ controller.login = async (req, res, next) => {
 
 controller.whoami = async (req, res, next) => {
   try {
-    const { _id, carnet, name, lastname, email, degree, roles } = req.user;
+    const { _id, name, lastname, email, degree, roles, savedPosts } = req.user;
     return res.status(200).json({
-      _id, carnet, name, lastname, email, degree, roles
+      _id, name, lastname, email, degree, roles, savedPosts
     })
   } catch (error) {
     next(error); 

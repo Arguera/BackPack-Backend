@@ -12,13 +12,13 @@ validators.createPostValidator = [
     .notEmpty().withMessage('Topics is required'),
     // .isArray().withMessage('Topics must be an array'),
   body('publication_year')
-    .notEmpty().withMessage('Publication year is required')
-    .isNumeric().withMessage('Publication year must be a number')
-    .isLength({ min: 4, max: 4 }).withMessage('Publication year must be 4 digits'),
+    .notEmpty().withMessage('Publication year is required'),
+    // .isNumeric().withMessage('Publication year must be a number')
+    // .isLength({ min: 4, max: 4 }).withMessage('Publication year must be 4 digits'),
   body('publication_cycle')
-    .notEmpty().withMessage('Publication cycle is required')
-    .isNumeric().withMessage('Publication cycle must be a number')
-    .isInt([1, 2, 3]).withMessage('Publication cycle must be 1, 2 or 3'),
+    .notEmpty().withMessage('Publication cycle is required'),
+    // .isNumeric().withMessage('Publication cycle must be a number')
+    // .isInt([1, 2, 3]).withMessage('Publication cycle must be 1, 2 or 3'),
   body('category')
     .notEmpty().withMessage('Category is required')
     .isString().withMessage('Category must be a string'),

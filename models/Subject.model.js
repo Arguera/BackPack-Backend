@@ -17,6 +17,11 @@ const SubjectSchema = new Schema({
     type: String,
     trim: true,
     required: true
+  },
+  degree: {
+    type: [Schema.Types.ObjectId],
+    ref: 'Degree',
+    required: true
   }
 },{ timestamps: true });
 

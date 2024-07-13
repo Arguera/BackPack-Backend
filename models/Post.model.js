@@ -16,11 +16,11 @@ const PostSchema = new Schema({
     required: true
   },
   publication_year: {
-    type: Number,
+    type: String,
     required: true
   },	
   publication_cycle: {
-    type: Number,
+    type: String,
     required: true
   },
   category: {
@@ -34,7 +34,7 @@ const PostSchema = new Schema({
   },
   hidden: {
     type: Boolean,
-    default: true
+    default: false
   },
   user: {
     type: Schema.Types.ObjectId,

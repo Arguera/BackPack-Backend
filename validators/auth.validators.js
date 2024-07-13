@@ -1,12 +1,9 @@
 const { body } = require('express-validator')
 
 const validators = {};
-const passwordRegexp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,32}/
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,32}/
 
 validators.registerValidator = [
-  body('carnet')
-    .notEmpty().withMessage('Carnet is required')
-    .isLength({ min: 8, max: 8 }).withMessage('Carnet format incorrect'),
   body('name')
     .notEmpty().withMessage('Name is required')
     .isLength({ min: 4, max: 42 }).withMessage('Name format incorrect'),
@@ -20,7 +17,7 @@ validators.registerValidator = [
     .notEmpty().withMessage('Degree is required'),
   body('password')
     .notEmpty().withMessage('Password is required')
-    .matches(passwordRegexp).withMessage('Password format incorrect')
+    .matches(passwordRegex).withMessage('Password format incorrect')
 ];
 
 module.exports = validators;
