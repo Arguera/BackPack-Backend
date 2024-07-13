@@ -14,7 +14,8 @@ validators.registerValidator = [
     .notEmpty().withMessage('Email is required')
     .isEmail().withMessage('Email format incorrect'),
   body('degree')
-    .notEmpty().withMessage('Degree is required'),
+    .notEmpty().withMessage('Degree is required')
+    .isMongoId().withMessage('Degree format incorrect'),
   body('password')
     .notEmpty().withMessage('Password is required')
     .matches(passwordRegex).withMessage('Password format incorrect')

@@ -23,7 +23,8 @@ const userSchema = new Schema({
     lowercase: true
   },
   degree: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: 'Degree',
     required: true,
   },
   hashedPassword: {
