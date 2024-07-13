@@ -47,13 +47,13 @@ controller.login = async (req, res, next) => {
 
     // Si no existe -> 404
     if(!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(401).json({ error: 'Invalid username or password' });
     }
 
     // Si existe verificamos la password
     // Si la password no coincide -> 401
     if(!user.comparePassword(password)) {
-      return res.status(401).json({ error: 'Incorrect password' })
+      return res.status(401).json({ error: 'Invalid username or password' })
     } 
 
     // Si la password coincide -> Loggeamos 
