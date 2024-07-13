@@ -5,12 +5,6 @@ const crypto = require('crypto');
 const debug = require('debug')('app:user-model')
 
 const userSchema = new Schema({
-  carnet: {
-    type: String,
-    required: true,
-    trim: true,
-    unique: true
-  },
   name: {
     type: String,
     required: true,

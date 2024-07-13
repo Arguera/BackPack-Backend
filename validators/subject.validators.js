@@ -10,7 +10,10 @@ validators.createSubjectValidator = [
     .isString().withMessage('Code must be a string'),
   body('name')
     .notEmpty().withMessage('Name is required')
-    .isString().withMessage('Name must be a string')
+    .isString().withMessage('Name must be a string'),
+  body('degree')
+    .notEmpty().withMessage('Degree is required')
+    .isArray().withMessage('Degree must be an array')
 ];
 
 validators.idInParamsValidator = [

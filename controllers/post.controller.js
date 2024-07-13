@@ -19,9 +19,9 @@ controller.findAll = async (req, res, next) => {
   try {
     const posts = await Post.find({ hidden: false })
       .populate('subject', 'code name image')
-      .populate('user', 'carnet name lastname email degree')
-      .populate('likes', 'carnet name lastname email degree')
-      .populate('comments.user', 'carnet name lastname email degree');
+      .populate('user', 'name lastname email degree')
+      .populate('likes', 'name lastname email degree')
+      .populate('comments.user', 'name lastname email degree');
 
     return res.status(200).json({ posts });
   } catch (error) {
@@ -37,9 +37,9 @@ controller.findOneById = async (req, res, next) => {
     const post = 
       await Post.findOne({ _id: identifier, hidden: false })
       .populate('subject', 'code name image')
-      .populate('user', 'carnet name lastname email degree')
-      .populate('likes', 'carnet name lastname email degree')
-      .populate('comments.user', 'carnet name lastname email degree');
+      .populate('user', 'name lastname email degree')
+      .populate('likes', 'name lastname email degree')
+      .populate('comments.user', 'name lastname email degree');
 
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
@@ -57,9 +57,9 @@ controller.findByUser = async (req, res, next) => {
     const posts = 
       await Post.find({ user: identifier, hidden: false })
       .populate('subject', 'code name image')
-      .populate('user', 'carnet name lastname email degree')
-      .populate('likes', 'carnet name lastname email degree')
-      .populate('comments.user', 'carnet name lastname email degree');
+      .populate('user', 'name lastname email degree')
+      .populate('likes', 'name lastname email degree')
+      .populate('comments.user', 'name lastname email degree');
 
     return res.status(200).json({ posts });
   } catch (error) {
@@ -73,9 +73,9 @@ controller.findOwn = async (req, res, next) => {
 
     const posts = await Post.find({ user: userId })
       .populate('subject', 'code name image')
-      .populate('user', 'carnet name lastname email degree')
-      .populate('likes', 'carnet name lastname email degree')
-      .populate('comments.user', 'carnet name lastname email degree');
+      .populate('user', 'name lastname email degree')
+      .populate('likes', 'name lastname email degree')
+      .populate('comments.user', 'name lastname email degree');
     
     return res.status(200).json({ posts });
   } catch (error) {
@@ -90,9 +90,9 @@ controller.findBySubject = async (req, res, next) => {
     const post =
       await Post.find({ subject: identifier, hidden: false })
       .populate('subject', 'code name image')
-      .populate('user', 'carnet name lastname email degree')
-      .populate('likes', 'carnet name lastname email degree')
-      .populate('comments.user', 'carnet name lastname email degree');
+      .populate('user', 'name lastname email degree')
+      .populate('likes', 'name lastname email degree')
+      .populate('comments.user', 'name lastname email degree');
 
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
@@ -117,15 +117,15 @@ controller.findSavedPosts = async (req, res, next) => {
           },
           {
             path: 'user',
-            select: 'carnet name lastname email degree'
+            select: 'name lastname email degree'
           },
           {
             path: 'likes',
-            select: 'carnet name lastname email degree'
+            select: 'name lastname email degree'
           },
           {
             path: 'comments.user',
-            select: 'carnet name lastname email degree'
+            select: 'name lastname email degree'
           }
         ]
       });
@@ -163,9 +163,9 @@ controller.toggleHidden = async (req, res, next) => {
     // Verificamos la pertenencia del post al usuario 
     const post = await Post.findOne({ _id: identifier, user: user._id })
       .populate('subject', 'code name image')
-      .populate('user', 'carnet name lastname email degree')
-      .populate('likes', 'carnet name lastname email degree')
-      .populate('comments.user', 'carnet name lastname email degree');
+      .populate('user', 'name lastname email degree')
+      .populate('likes', 'name lastname email degree')
+      .populate('comments.user', 'name lastname email degree');
 
     if(!post) {
       return res.status(404).json({ error: 'Post not found' })
@@ -192,8 +192,8 @@ controller.likeAPost = async (req, res, next) => {
     const post = 
       await Post.findOne({ _id: identifier, hidden: false })
       .populate('subject', 'code name image')
-      .populate('user', 'carnet name lastname email degree')
-      .populate('comments.user', 'carnet name lastname email degree');
+      .populate('user', 'name lastname email degree')
+      .populate('comments.user', 'name lastname email degree');
 
     if(!post) {
       return res.status(404).json({ error: 'Post not found' })
@@ -213,7 +213,7 @@ controller.likeAPost = async (req, res, next) => {
     // Commit a los cambios
     const newPost = 
       await (await post.save())
-      .populate('likes', 'carnet name lastname email degree');
+      .populate('likes', 'name lastname email degree');
     return res.status(200).json(newPost);
   } catch (error) {
     next(error);
@@ -255,15 +255,15 @@ controller.saveAPost = async (req, res, next) => {
           },
           {
             path: 'user',
-            select: 'carnet name lastname email degree'
+            select: 'name lastname email degree'
           },
           {
             path: 'likes',
-            select: 'carnet name lastname email degree'
+            select: 'name lastname email degree'
           },
           {
             path: 'comments.user',
-            select: 'carnet name lastname email degree'
+            select: 'name lastname email degree'
           }
         ]
       });
@@ -284,8 +284,8 @@ controller.saveComment = async (req, res, next) => {
     const post = 
       await Post.findOne({ _id: identifier, hidden: false })
       .populate('subject', 'code name image')
-      .populate('user', 'carnet name lastname email degree')
-      .populate('likes', 'carnet name lastname email degree');
+      .populate('user', 'name lastname email degree')
+      .populate('likes', 'name lastname email degree');
 
     // Verificar que el post exista
     if(!post) {
@@ -313,7 +313,7 @@ controller.saveComment = async (req, res, next) => {
     post['comments'] = _comments;
     const newPost = 
       await (await post.save())
-      .populate('comments.user', 'carnet name lastname email degree');
+      .populate('comments.user', 'name lastname email degree');
 
     // Retornamos el post actualizado
     return res.status(200).json(newPost);
