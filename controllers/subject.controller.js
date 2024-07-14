@@ -8,7 +8,7 @@ const controller = {};
 
 controller.save = async (req, res, next) => {
   try {
-    const { code, name } = req.body;
+    const { code, name, degree } = req.body;
     const file = req.file;
 
     const { identifier } = req.params;
@@ -36,6 +36,7 @@ controller.save = async (req, res, next) => {
 
     subject['code'] = code;
     subject['name'] = name;
+    subject['degree'] = degree;
     subject['image'] = image.url;
 
     const subjectSaved = await subject.save();
